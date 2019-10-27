@@ -1,0 +1,26 @@
+{
+  "name": "devbootcamps",
+  "version": "1.0.0",
+  "description": "API for Devbootcamp projects",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marb61a/devbootcamps.git"
+  },
+  "author": "Martin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marb61a/devbootcamps/issues"
+  },
+  "homepage": "https://github.com/marb61a/devbootcamps#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
