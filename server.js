@@ -8,11 +8,6 @@ dotenv.config({
 
 const app = express();
 
-// Routes
-app.get('/', (req, res) => {
-    
-})
-
 // Open a port which can be specified in the environment 
 // variables config file
 const PORT = process.env.PORT || 5000;
