@@ -5,6 +5,11 @@ const connectDB = async () => {
         // Stop warnings for happening
         useNewUrlParser: true,
         useCreateIndex: true,
-        useFindAndModify: false
+        useFindAndModify: false,
+        useUnifiedTopology: true
     });
+
+    console.log(`MongoDB connect ${conn.connection.host}`);
 };
+
+module.exports = connectDB;
