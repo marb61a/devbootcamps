@@ -21,5 +21,34 @@ const BootstrapSchema = new mongoose.Schema({
             "Please use a valid URL with HTTP or HTTPS"
         ]
     },
-    
+    phone: {
+        type: String,
+        maxlength: [20, "Phone number can not be more than 20 characters in length"]
+    },
+    email: {
+        type: String,
+        match: [
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            "Please add a valid email"
+        ]
+    },
+    address: {
+        type: String,
+        required: [true, "Please add an address"]
+    },
+    location: {
+        // GEOJson
+        type: {
+            type: String,
+            enum: ["Point"],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+            index: "2dsphere"
+        },
+        formattedAddress: String,
+        
+    }
 })
