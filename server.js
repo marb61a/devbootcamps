@@ -28,7 +28,7 @@ app.use('/api/v1/bootcamps', bootcamps);
 
 // Open a port which can be specified in the environment 
 // variables config file
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 const server = app.listen(
     PORT,
