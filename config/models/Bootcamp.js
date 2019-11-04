@@ -49,6 +49,31 @@ const BootstrapSchema = new mongoose.Schema({
             index: "2dsphere"
         },
         formattedAddress: String,
+        street: String,
+        city: String,
+        state: String,
+        zipcode: String,
+        country: String,
+        career: {
+            // Array of strings
+            type: [String],
+            required: true,
+            enum: [
+                'Web Development',
+                'Mobile Development',
+                'UI/UX',
+                'Data Science',
+                'Business',
+                'Tester',
+                'Other'
+            ]
+        },
+        averageRating: {
+            type: Number,
+            min: [1, 'Ratings must be at least 1'],
+            max: [10, 'Ratings can not be more than 10']
+        },
+        averageCost: Number,
         
     }
 })
