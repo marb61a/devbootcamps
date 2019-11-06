@@ -18,6 +18,10 @@ const bootcamps = require('./routes/bootcamps');
 
 const app = express();
 
+// For body parsing, no need to install body-parser package
+// as it is now included in express
+app.use(express.json);
+
 // Logging middleware with Morgan
 if(process.env.NODE_ENV === 'developmen'){
     app.use("morgan");
