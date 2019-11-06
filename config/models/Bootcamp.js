@@ -74,6 +74,31 @@ const BootstrapSchema = new mongoose.Schema({
             max: [10, 'Ratings can not be more than 10']
         },
         averageCost: Number,
-        
+        photo: {
+            type: String,
+            default: 'no-photo.jpg'
+        },
+        housing: {
+            type: Boolean,
+            default: false
+        },
+        jobAssistance: {
+            type: Boolean,
+            default: false
+        },
+        jobGuarantee: {
+            type: Boolean,
+            default: false
+        },
+        acceptGi: {
+            type: Boolean,
+            default: false
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
     }
 })
+
+module.exports = mongoose.model('Bootcamp', BootcampSchema);
