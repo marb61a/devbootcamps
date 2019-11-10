@@ -12,6 +12,7 @@ exports.getBootcamps = async(req, res, next) => {
 
         res.status(200).json({
             success: true,
+            count: bootcamps.length,
             data: bootcamps
         });
     } catch(err) {
@@ -29,7 +30,7 @@ exports.getBootcamp = async (req, res, next) => {
         const bootcamp = await Bootcamp.findById(req.params.id);
 
         // If no bootcamp exists
-        if(bootcamp) {
+        if(!bootcamp) {
             // Use return to avoid error from the 400 errors clashing
             // which will cause a header already sent error, this is avoided
             // by returning the first one
@@ -56,7 +57,7 @@ exports.createBootcamp = async (req, res, next) => {
     try {
         const bootcamp = await Bootcamp.create(req.body);
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             data: bootcamp
         });
@@ -76,19 +77,38 @@ exports.updateBootcamp = async (req, res, next) => {
         runValidators: true
     });
 
-    if(bootcamp) {
+    if(!bootcamp) {
         return res.status(400).json({
             success: false
         });
-    }    
+    }
+
+    res.status(200).json({
+        success: true,
+        data: bootcamp
+    });
 };
 
 // @desc            Delete bootcamp
 // @route           DELETE /api/v1/bootcamps/:id
 // @access          Private
-exports.deleteBootcamp = (req, res, next) => {
-    res.status(200).json({
-        success: true,
-        msg: `Delete bootcamp ${req.params.id}`
-    });
+exports.deleteBootcamp = async(req, res, next) => {
+    try {
+        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+
+        if(!bootcamp) {
+            return res.status(400).json({
+                success: false
+            });
+        }
+    
+        res.status(200).json({
+            success: true,
+            data: {}
+        });
+    } catch(err) {
+        res.status(400).json({
+            success: false
+        });
+    }
 };
