@@ -28,6 +28,16 @@ exports.getBootcamp = async (req, res, next) => {
     try {
         const bootcamp = await Bootcamp.findById(req.params.id);
 
+        // If no bootcamp exists
+        if(bootcamp) {
+            // Use return to avoid error from the 400 errors clashing
+            // which will cause a header already sent error, this is avoided
+            // by returning the first one
+            return res.status(400).json({
+                success: false
+            });
+        }
+
         res.status(200).json({
             success: true,
             data: bootcamp
@@ -60,11 +70,17 @@ exports.createBootcamp = async (req, res, next) => {
 // @desc            Update a bootcamp
 // @route           PUT /api/v1/bootcamps/:id
 // @access          Private
-exports.updateBootcamp = (req, res, next) => {
-    res.status(200).json({
-        success: true,
-        msg: `Update bootcamp ${req.params.id}`
+exports.updateBootcamp = async (req, res, next) => {
+    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
     });
+
+    if(bootcamp) {
+        return res.status(400).json({
+            success: false
+        });
+    }    
 };
 
 // @desc            Delete bootcamp
