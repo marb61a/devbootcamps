@@ -17,9 +17,7 @@ exports.getBootcamps = async(req, res, next) => {
             data: bootcamps
         });
     } catch(err) {
-        res.status(400).json({
-            success: false
-        });
+        next(err);
     }
 };
 
@@ -35,7 +33,7 @@ exports.getBootcamp = async (req, res, next) => {
             // Use return to avoid error from the 400 errors clashing
             // which will cause a header already sent error, this is avoided
             // by returning the first one
-            next(
+            return next(
                 new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404)
             );
         }
@@ -47,7 +45,7 @@ exports.getBootcamp = async (req, res, next) => {
     } catch(err) {
         // Passing the error to next is the suggested way of handling
         // errors in async functions in express
-        next(new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404));
+        next(err);
     }
 };
 
@@ -63,9 +61,7 @@ exports.createBootcamp = async (req, res, next) => {
             data: bootcamp
         });
     } catch (err) {
-        res.status(400).json({
-            success: false
-        });
+        next(err);
     }
 };
 
@@ -79,9 +75,9 @@ exports.updateBootcamp = async (req, res, next) => {
     });
 
     if(!bootcamp) {
-        return res.status(400).json({
-            success: false
-        });
+        return next(
+            new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404)
+        );
     }
 
     res.status(200).json({
@@ -98,9 +94,9 @@ exports.deleteBootcamp = async(req, res, next) => {
         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
 
         if(!bootcamp) {
-            return res.status(400).json({
-                success: false
-            });
+            return next(
+                new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404)
+            );
         }
     
         res.status(200).json({
@@ -108,8 +104,6 @@ exports.deleteBootcamp = async(req, res, next) => {
             data: {}
         });
     } catch(err) {
-        res.status(400).json({
-            success: false
-        });
+        next(err);
     }
 };
