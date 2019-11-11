@@ -1,3 +1,4 @@
+const ErrorResponse = require("../utils/errorResponse");
 const Bootcamp = require("../models/Bootcamp");
 
 // Middleware functions which will remove some logic
@@ -34,9 +35,9 @@ exports.getBootcamp = async (req, res, next) => {
             // Use return to avoid error from the 400 errors clashing
             // which will cause a header already sent error, this is avoided
             // by returning the first one
-            return res.status(400).json({
-                success: false
-            });
+            next(
+                new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404)
+            );
         }
 
         res.status(200).json({
@@ -44,13 +45,9 @@ exports.getBootcamp = async (req, res, next) => {
             data: bootcamp
         });
     } catch(err) {
-        // res.status(400).json({
-        //     success: false
-        // });
-
         // Passing the error to next is the suggested way of handling
         // errors in async functions in express
-        next(err);
+        next(new ErrorResponse(`Bootcamp with id of ${req.params.id} has not been found`, 404));
     }
 };
 
