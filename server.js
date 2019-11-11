@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const colors = require("colors");
 
 const connectDB = require("./config/db");
+const errorHandler = require("./middleware/error");
 
 // Load the environment variables
 dotenv.config({
@@ -29,6 +30,8 @@ if(process.env.NODE_ENV === 'developmen'){
 
 // Mounts the routers
 app.use('/api/v1/bootcamps', bootcamps);
+
+app.use(errorHandler);
 
 // Open a port which can be specified in the environment 
 // variables config file

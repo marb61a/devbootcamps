@@ -44,9 +44,13 @@ exports.getBootcamp = async (req, res, next) => {
             data: bootcamp
         });
     } catch(err) {
-        res.status(400).json({
-            success: false
-        });
+        // res.status(400).json({
+        //     success: false
+        // });
+
+        // Passing the error to next is the suggested way of handling
+        // errors in async functions in express
+        next(err);
     }
 };
 
