@@ -42,11 +42,9 @@ const BootcampSchema = new mongoose.Schema({
         type: {
             type: String,
             enum: ["Point"],
-            required: true
         },
         coordinates: {
             type: [Number],
-            required: true,
             index: "2dsphere"
         },
         formattedAddress: String,
@@ -55,30 +53,31 @@ const BootcampSchema = new mongoose.Schema({
         state: String,
         zipcode: String,
         country: String,
-        career: {
-            // Array of strings
-            type: [String],
-            required: true,
-            enum: [
-                'Web Development',
-                'Mobile Development',
-                'UI/UX',
-                'Data Science',
-                'Business',
-                'Tester',
-                'Other'
-            ]
-        },
-        averageRating: {
-            type: Number,
-            min: [1, 'Ratings must be at least 1'],
-            max: [10, 'Ratings can not be more than 10']
-        },
-        averageCost: Number,
-        photo: {
-            type: String,
-            default: 'no-photo.jpg'
-        },
+    },
+    career: {
+        // Array of strings
+        type: [String],
+        required: true,
+        enum: [
+            'Web Development',
+            'Mobile Development',
+            'UI/UX',
+            'Data Science',
+            'Business',
+            'Tester',
+            'Other'
+        ]
+    },
+    averageRating: {
+        type: Number,
+        min: [1, 'Ratings must be at least 1'],
+        max: [10, 'Ratings can not be more than 10']
+    },
+    averageCost: Number,
+    photo: {
+        type: String,
+        default: 'no-photo.jpg'
+    },
         housing: {
             type: Boolean,
             default: false
@@ -98,15 +97,44 @@ const BootcampSchema = new mongoose.Schema({
         createdAt: {
             type: Date,
             default: Date.now
+        },
+        user: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+            required: true
         }
+    },
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
     }
-});
+);
 
 // Create bootcamp slug from the name
 BootcampSchema.pre('save', function(next) {
     this.slug = slugify(this.name, {
         lower: true
     });
+    next();
+});
+
+// Geocode and create location field
+BootcampSchema.pre("save", function(next) {
+    const campLoc = await geocoder.geocode(this.address);
+    
+    this.location = {
+        tpye: "Point",
+        coordinates: [campLoc[0].longitude, campLoc[0].latitude],
+        formattedAddress: campLoc[0].formattedAddress,
+        street: campLoc[0].streetName,
+        city: campLoc[0].city,
+        state: campLoc[0].stateCode,
+        zipcode: campLoc[0].zipcode,
+        country: campLoc[0].countryCode
+    }
+
+    // Do not save address in DB
+    this.address = undefined;
     next();
 });
 
