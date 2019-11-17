@@ -95,3 +95,7 @@ exports.deleteBootcamp = asyncHandler(async(req, res, next) => {
         });
     }
 );
+
+// @desc            Get bootcamps within a radius
+// @route           GET /api/v1/bootcamps/radius/:zipcode/:distance
+// @access          Private
