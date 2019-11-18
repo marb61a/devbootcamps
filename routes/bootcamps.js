@@ -8,6 +8,8 @@ const{
 // Initialise the express router
 const router = express.Router();
 
+const advancedResults = require('../middleware/advancedResults');
+
 router.route('/radius/:zipcode/:distance')
     .get(getBootcampsInRadius);
 
