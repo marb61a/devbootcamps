@@ -47,3 +47,4 @@ exports.getCourse = asyncHandler(async(req, res, next) => {
             data: course
         });
 });
+
