@@ -48,3 +48,34 @@ exports.getCourse = asyncHandler(async(req, res, next) => {
         });
 });
 
+// @desc            Add a course
+// @route           POST /api/v1/bootcamps/:bootcampId/courses
+// @access          Private
+exports.addCourse = asyncHandler(async(req, res, next) => {
+    req.body.bootcamp = req.params.bootcampId;
+    req.body.user = req.user.id;
+    const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+
+    if(!bootcamp){
+        return next(
+            new ErrorResponse(`No bootcamp with the id of ${req.params.bootcampId}`),
+            404
+        );
+    }
+
+    // Ensure that the user is the bootcamp owner
+    if(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next (
+            new ErrorResponse(
+                `User ${req.user.id} is not authorized to add a course to bootcamp ${bootcamp._id}`, 401
+            )
+        );
+    }
+
+    const course = await Course.create(req.body);
+    res.status(200)
+        .json({
+            success: true,
+            data: course
+        });
+});
