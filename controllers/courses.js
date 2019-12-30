@@ -112,3 +112,4 @@ exports.updateCourse = asyncHandler(async(req, res, next) => {
             data: course
         });
 });
+
