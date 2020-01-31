@@ -113,3 +113,33 @@ exports.updateCourse = asyncHandler(async(req, res, next) => {
         });
 });
 
+// @desc            Delete a course
+// @route           DELETE /api/v1/courses/:id
+// @access          Private
+exports.deleteCourse = asyncHandler(async (req, res, next) => {
+    const course = await Course.findById(req.params.id);
+
+    if(!course) {
+        return next(
+            new ErrorResponse(
+                new ErrorResponse(`No course with the id of ${req.params.id}`), 404
+            )
+        );
+    }
+
+    // Ensure that the user is the course owner or that the user is admin
+    if(course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(
+            new ErrorResponse(
+                `User ${req.user.id} is not authorized to delete course ${course._id}`, 401
+            )
+        );
+    }
+
+    await course.remove();
+    res.status(200)
+        .json({
+            success: true,
+            data: {}
+        });
+});
