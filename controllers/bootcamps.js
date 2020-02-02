@@ -1,3 +1,4 @@
+const path = require('path');
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Bootcamp = require("../models/Bootcamp");
@@ -126,4 +127,27 @@ exports.getBootcampsInRadius = asyncHandler(async(req, res, next) => {
             count: bootcamps.length,
             data: bootcamps
         });
+});
+
+// @desc            Upload a photo for a bootcamp
+// @route           PUT /api/v1/bootcamps/:id/photo
+// @access          Private
+exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+    const bootcamp = await Bootcamp.findById(req.params.id);
+
+    if(!bootcamp) {
+        return next(
+            new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+        );
+    }
+    
+    // Ensure that the review belongs to the user or that the user is admin
+    if(bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(
+            new ErrorResponse(
+                `User ${req.params.id} is not authorized to update this bootcamp`, 401
+            )
+        );
+    }
+    
 });
