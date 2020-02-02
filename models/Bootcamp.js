@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const geocoder = require('../utils/geocoder');
 
 const BootcampSchema = new mongoose.Schema({
     name: {
@@ -78,31 +79,31 @@ const BootcampSchema = new mongoose.Schema({
         type: String,
         default: 'no-photo.jpg'
     },
-        housing: {
-            type: Boolean,
-            default: false
-        },
-        jobAssistance: {
-            type: Boolean,
-            default: false
-        },
-        jobGuarantee: {
-            type: Boolean,
-            default: false
-        },
-        acceptGi: {
-            type: Boolean,
-            default: false
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        user: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'User',
-            required: true
-        }
+    housing: {
+        type: Boolean,
+        default: false
+    },
+    jobAssistance: {
+        type: Boolean,
+        default: false
+    },
+    jobGuarantee: {
+        type: Boolean,
+        default: false
+    },
+    acceptGi: {
+        type: Boolean,
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true
+    }
     },
     {
         toJSON: { virtuals: true },
@@ -138,5 +139,19 @@ BootcampSchema.pre("save", function(next) {
     next();
 });
 
-
+// Cascade delete courses when a bootcamp is deleted
+BootcampSchema.pre('remove', async function(next) {
+    console.log(`Courses being removed from bootcamp ${this._id}`);
+    await this.model('Course').deleteMany({ bootcamp: this._id });
+    next();
+});
+  
+// Reverse populate with virtuals
+BootcampSchema.virtual('courses', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp',
+    justOne: false
+});
+  
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
