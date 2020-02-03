@@ -59,6 +59,20 @@ const advancedResults = (model, populate) => async => {
         }
     }
 
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit
+        };
+    }
+    
+    res.advancedResults = {
+        success: true,
+        count: results.length,
+        pagination,
+        data: results
+    };
+
     next();
 }
 
