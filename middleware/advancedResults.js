@@ -33,6 +33,32 @@ const advancedResults = (model, populate) => async => {
         query = query.sort('-createdAt');
     }
 
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await model.countDocuments();
+
+    query = query.skip(startIndex).limit(limit);
+
+    if(populate) {
+        query = query.populate(populate);
+    }
+
+    // Executing the query
+    const results = await query;
+
+    // Pagination result
+    const pagination = {};
+
+    if(endIndex < total) {
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+
     next();
 }
 
